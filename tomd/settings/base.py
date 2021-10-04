@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.modeladmin",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -49,9 +50,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "wagtailnetlify",
-    "fakenews",
-    "wagtail_headless_preview",
     "wagtailmedia",
 ]
 
@@ -81,6 +79,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "wagtail.contrib.settings.context_processors.settings",
             ]
         },
     }
@@ -145,9 +144,7 @@ BASE_URL = "http://tomd.org"
 
 CORS_ORIGIN_ALLOW_ALL = True
 WAGTAILEMBEDS_RESPONSIVE_HTML = True
-HEADLESS_PREVIEW_CLIENT_URLS = {
-    "default": "https://preview.tomd.org/preview",
-}
+
 
 # Netlify config
 NETLIFY_API_TOKEN = env.get("NETLIFY_API_TOKEN")
