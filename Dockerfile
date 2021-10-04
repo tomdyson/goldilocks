@@ -1,4 +1,4 @@
-FROM python:3.8.5
+FROM python:3.9
 
 ENV PYTHONUNBUFFERED 1 \
     WEB_CONCURRENCY=3 \
@@ -11,9 +11,6 @@ RUN pip install gunicorn
 
 COPY . /code/
 WORKDIR /code/
-
-# Install Netlify - https://github.com/netlify/netlifyctl
-RUN wget -qO- 'https://cli.netlify.com/download/latest/linux' | tar xz
 
 RUN useradd wagtail
 RUN chown -R wagtail /code
