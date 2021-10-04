@@ -4,7 +4,7 @@ from wagtail.core.models import Page
 
 
 class HomePage(Page):
-    pass
+    subpage_types = ["blog.BlogPage"]
 
     def get_context(self, request):
         # Update context to include only published posts,
