@@ -136,17 +136,11 @@ if "AWS_STORAGE_BUCKET_NAME" in env:
     INSTALLED_APPS += ("storages",)
 
 # Wagtail settings
-WAGTAIL_SITE_NAME = "tomd"
+WAGTAIL_SITE_NAME = "Calais 2021"
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend,
 # e.g. in notification emails.
-BASE_URL = "http://tomd.org"
+BASE_URL = "https://calais2021.tomd.org"
 
 CORS_ORIGIN_ALLOW_ALL = True
 WAGTAILEMBEDS_RESPONSIVE_HTML = True
-
-
-# Netlify config
-NETLIFY_API_TOKEN = env.get("NETLIFY_API_TOKEN")
-NETLIFY_BUILD_HOOK = env.get("NETLIFY_BUILD_HOOK")
-NETLIFY_SITE_ID = env.get("NETLIFY_SITE_ID")
