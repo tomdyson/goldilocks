@@ -136,7 +136,7 @@ if "AWS_STORAGE_BUCKET_NAME" in env:
     INSTALLED_APPS += ("storages",)
 
 # Wagtail settings
-WAGTAIL_SITE_NAME = "Calais 2021"
+WAGTAIL_SITE_NAME = "Goldilocks"
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend,
 # e.g. in notification emails.
@@ -144,3 +144,6 @@ BASE_URL = "https://calais2021.tomd.org"
 
 CORS_ORIGIN_ALLOW_ALL = True
 WAGTAILEMBEDS_RESPONSIVE_HTML = True
+
+WAGTAILADMIN_BASE_URL = "http://example.com"
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

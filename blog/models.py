@@ -3,7 +3,7 @@ from wagtail.api import APIField
 from wagtail.core.models import Page
 from wagtail.core.fields import StreamField
 from wagtail.core import blocks
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, PageChooserPanel
+from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel
 from wagtail.contrib.settings.models import BaseSetting, register_setting
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
@@ -34,12 +34,13 @@ class BlogPage(Page):
             ),
             ("image", ImageChooserBlock(icon="image")),
             ("embed", EmbedBlock(icon="media")),
-        ]
+        ],
+        use_json_field=True,
     )
 
     content_panels = Page.content_panels + [
         FieldPanel("date"),
-        StreamFieldPanel("body"),
+        FieldPanel("body"),
     ]
 
     api_fields = [APIField("date"), APIField("body")]
