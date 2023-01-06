@@ -1,5 +1,4 @@
 import os
-import dj_database_url
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -8,6 +7,10 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 env = os.environ.copy()
+
+running_on_fly = False
+if os.environ.get("FLY_APP_NAME"):
+    running_on_fly = True
 
 if "SENTRY_DSN" in env:
     sentry_sdk.init(
@@ -18,6 +21,14 @@ if "SENTRY_DSN" in env:
 
 if "SECRET_KEY" in env:
     SECRET_KEY = env["SECRET_KEY"]
+
+ALLOWED_HOSTS = [
+    "goldilocks.fly.dev",
+    "goldilocksrecords.com",
+    "www.goldilocksrecords.com",
+]
+
+CSRF_TRUSTED_ORIGINS = ["https://goldilocks.fly.dev", "https://goldilocksrecords.com"]
 
 if "ALLOWED_HOSTS" in env:
     ALLOWED_HOSTS = env["ALLOWED_HOSTS"].split(",")
@@ -87,15 +98,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "tomd.wsgi.application"
 
-if "DATABASE_URL" in env:
-    DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
+if running_on_fly:
+    SQLITE_PATH = "/data/goldilocks.sqlite3"
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-        }
+    SQLITE_PATH = os.path.join(BASE_DIR, "goldilocks.sqlite3")
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": SQLITE_PATH,
     }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -119,21 +132,11 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
-
-# S3 configuration
-if "AWS_STORAGE_BUCKET_NAME" in env:
-    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    AWS_STORAGE_BUCKET_NAME = env["AWS_STORAGE_BUCKET_NAME"]
-    AWS_DEFAULT_ACL = "public-read"
-    AWS_QUERYSTRING_AUTH = False
-    AWS_S3_FILE_OVERWRITE = False
-
-    if "AWS_S3_CUSTOM_DOMAIN" in env:
-        AWS_S3_CUSTOM_DOMAIN = env["AWS_S3_CUSTOM_DOMAIN"]
-
-    INSTALLED_APPS += ("storages",)
+if running_on_fly:
+    MEDIA_ROOT = "/data/media"
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Wagtail settings
 WAGTAIL_SITE_NAME = "Goldilocks"

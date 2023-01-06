@@ -1,19 +1,26 @@
-FROM python:3.9
+ARG PYTHON_VERSION=3.10-slim-buster
 
-ENV PYTHONUNBUFFERED 1 \
-    WEB_CONCURRENCY=3 \
-    GUNICORN_CMD_ARGS="--max-requests 1200 " \
-    DJANGO_SETTINGS_MODULE=tomd.settings.production
+FROM python:${PYTHON_VERSION}
 
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install -r /code/requirements.txt
-RUN pip install gunicorn
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir -p /code
+
+WORKDIR /code
+
+COPY requirements.txt /tmp/requirements.txt
+
+RUN set -ex && \
+    pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    pip install gunicorn && \
+    rm -rf /root/.cache/
 
 COPY . /code/
-WORKDIR /code/
 
-RUN useradd wagtail
-RUN chown -R wagtail /code
-USER wagtail
+RUN python manage.py collectstatic --noinput
 
-CMD ["./run.sh"]
+EXPOSE 8000
+
+CMD set -xe; python manage.py migrate --noinput; gunicorn tomd.wsgi:application

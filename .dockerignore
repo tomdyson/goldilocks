@@ -1,3 +1,6 @@
 .git
 .cache
 **/*.env
+
+*.sqlite3
+venv
